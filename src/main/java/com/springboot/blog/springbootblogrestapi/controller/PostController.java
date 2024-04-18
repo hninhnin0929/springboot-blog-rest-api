@@ -2,6 +2,7 @@ package com.springboot.blog.springbootblogrestapi.controller;
 
 import com.springboot.blog.springbootblogrestapi.entity.Post;
 import com.springboot.blog.springbootblogrestapi.payload.PostDto;
+import com.springboot.blog.springbootblogrestapi.payload.PostResponse;
 import com.springboot.blog.springbootblogrestapi.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,13 @@ public class PostController {
 
 //    get all posts rest api
     @GetMapping
-    public List<PostDto> getAllPosts() {
-        return postService.getAllPosts();
+    public PostResponse getAllPosts(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
 //    get post by id
@@ -44,5 +50,14 @@ public class PostController {
         PostDto postResponse = postService.updatePost(postDto, id);
 
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
+    }
+
+//    delete post rest api
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
+
+        postService.deletePostById(id);
+
+        return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
 }
