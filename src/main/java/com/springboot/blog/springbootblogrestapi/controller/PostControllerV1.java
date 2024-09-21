@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/api/posts")
+@RequestMapping("/api/v1")
 @Tag(
         name = "CRUD REST APIs for Post Resource"
 )
@@ -45,7 +45,7 @@ public class PostControllerV1 {
     )
     // create blog post rest api
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping(value = "/posts")
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
         return  new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
@@ -59,7 +59,7 @@ public class PostControllerV1 {
             description = "Http Status 200 SUCCESS"
     )
 //    get all posts rest api
-    @GetMapping
+    @GetMapping(value = "/posts")
     public PostResponse getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -70,13 +70,13 @@ public class PostControllerV1 {
     }
 
     //    get post by id
-    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.javaguides.v1+json")
+    @GetMapping(value = "/posts/{id}")
     public ResponseEntity<PostDto> getPostByIdV1(@PathVariable(name = "id") long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
     //    get post by id
-    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.javaguides.v2+json")
+    @GetMapping(value = "/posts/{id}")
     public ResponseEntity<PostDtoV2> getPostByIdV2(@PathVariable(name = "id") long id) {
         PostDto postDto = postService.getPostById(id);
         PostDtoV2 postDtoV2 = new PostDtoV2();
@@ -118,7 +118,7 @@ public class PostControllerV1 {
             name = "Bear Authentication"
     )
     //    update post by id rest api
-    @PutMapping("/{id}")
+    @PutMapping(value = "/posts/{id}")
     public ResponseEntity<PostDto> updatedPost(@Valid @RequestBody PostDto postDto, @PathVariable(name="id") long id) {
 
         PostDto postResponse = postService.updatePost(postDto, id);
@@ -139,7 +139,7 @@ public class PostControllerV1 {
     )
 //    delete post rest api
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/posts/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
 
         postService.deletePostById(id);
@@ -149,7 +149,7 @@ public class PostControllerV1 {
 
     // Build Get Posts by Category REST API
     // http://localhost:8080/api/posts/category/3
-    @GetMapping("/category/{id}")
+    @GetMapping(value = "/posts/category/{id}")
     public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable("id") Long categoryId){
 
         List<PostDto> postDtos = postService.getPostsByCategory(categoryId);
